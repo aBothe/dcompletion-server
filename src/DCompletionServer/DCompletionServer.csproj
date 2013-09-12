@@ -48,7 +48,4 @@
       <Name>DParser2</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Protocol.md" />
-  </ItemGroup>
 </Project>

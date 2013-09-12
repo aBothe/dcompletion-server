@@ -13,18 +13,27 @@ The protocol is kept in a binary format.
 
 ## Protocol
 
-A message consists of bytes like the following:
+A message sent to the server consists of bytes structured as following:
 <table>
     <tr>
-        <td>Byte</td>
-        <td>0<td>
+        <td>Byte offset</td>
+        <td>0</td>
         <td>1</td>
     </tr>
     <tr>
-    	<td></td>
+    	<td>Description</td>
     	<td>ServerInstruction</td>
     	<td>Data</td>
     </tr>
 </table>
 
+A server instruction may be:
+<table>
+    <tr><td>Code</td><td>Meaning</td></tr>
+	
+    <tr>
+    	<td>1</td>
+    	<td>Clear parse cache</td>
+    </tr>
+</table>
 

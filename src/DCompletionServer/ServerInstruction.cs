@@ -31,10 +31,9 @@ namespace DCompletionServer
 	{
 		Invalid = 0,
 
-		Clear,
-		ParseDirectories,
-		PreresolveUFCS,
-
+		Clear = 1,
+		ParseDirectories = 2,
+		PreresolveUFCS = 3,
 
 	}
 }
