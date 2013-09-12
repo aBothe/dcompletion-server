@@ -35,6 +35,9 @@ namespace DCompletionServer
 		ParseDirectories = 2,
 		PreresolveUFCS = 3,
 
+		WaitForParseFinish = 4,
+		GetParseProgress = 5,
+		StopParseProcess = 6
 	}
 }
 
