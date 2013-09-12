@@ -1,12 +1,11 @@
-*/obj/*
-*/bin/*
+src/DCompletionServer/obj/*
+src/DCompletionServer/bin/*
 *.suo
 *.user
-build/index.html
-build/*.m*
 *.pidb
 *.userprefs
 *.orig
+*.bak
 
 *.DS_Store
 .DS_Store
