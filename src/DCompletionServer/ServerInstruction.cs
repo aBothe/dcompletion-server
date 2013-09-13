@@ -31,13 +31,30 @@ namespace DCompletionServer
 	{
 		Invalid = 0,
 
+		// Parse low-level
 		Clear = 1,
 		ParseDirectories = 2,
 		PreresolveUFCS = 3,
 
 		WaitForParseFinish = 4,
 		GetParseProgress = 5,
-		StopParseProcess = 6
+		StopParseProcess = 6,
+
+		// Completion options
+		GetCompletionOption=7,
+		SetCompletionOption=8,
+
+		// Editing
+		OpenFile=14,
+		ReleaseFile=15,
+
+		InsertText=9,
+		RemoveText=10,
+		ReplaceText=11,
+
+		// Completion
+		RequestCompletionItems=12,
+		GetItemDescription=13,
 	}
 }
 
