@@ -45,16 +45,18 @@ namespace DCompletionServer
 		SetCompletionOption=8,
 
 		// Editing
-		OpenFile=14,
-		ReleaseFile=15,
+		OpenFile=9,
+		ReleaseFile=10,
 
-		InsertText=9,
-		RemoveText=10,
-		ReplaceText=11,
+		InsertText=11,
+		RemoveText=12,
+		ReplaceText=13,
 
 		// Completion
-		RequestCompletionItems=12,
-		GetItemDescription=13,
+		RequestCompletionItems=14,
+		GetItemDescription=15,
+
+		GetLastError = 16,
 	}
 }
 
