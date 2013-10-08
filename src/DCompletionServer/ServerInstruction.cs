@@ -32,29 +32,54 @@ namespace DCompletionServer
 		Invalid = 0,
 
 		// Parse low-level
-		Clear = 1,
+		ClearParseCaches = 1,
 		ParseDirectories = 2,
-		PreresolveUFCS = 3,
+		PreresolveUFCS = 3, // Does a client really need to call this explicitly?
 
 		WaitForParseFinish = 4,
 		GetParseProgress = 5,
 		StopParseProcess = 6,
 
+		GetCachedDirectories=18,
+
 		// Completion options
 		GetCompletionOption=7,
 		SetCompletionOption=8,
 
-		// Editing
+		// File Meta Operations
+		CreateFile=23,
+		/// <summary>
+		/// Open a file for editing.
+		/// </summary>
 		OpenFile=9,
+		ReloadFile=17,
 		ReleaseFile=10,
+		RenameFile=21,
+		GetFileName=22,
 
+		// Editing
+		SetFileText=19,
+		GetFileText=20,
+		/// <summary>
+		/// Insert text into a file at a specific position.
+		/// </summary>
 		InsertText=11,
+		/// <summary>
+		/// Remove text from a file.
+		/// </summary>
 		RemoveText=12,
+		/// <summary>
+		/// Replace text in a file.
+		/// </summary>
 		ReplaceText=13,
 
 		// Completion
+		RequestCompletionContext=25, // For getting abstract language info about a location in the code - like expression/type/in a string/comment? etc.
 		RequestCompletionItems=14,
 		GetItemDescription=15,
+
+		// Resolution
+		FindSymbolReferences=24,
 
 		GetLastError = 16,
 	}
