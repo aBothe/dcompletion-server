@@ -1,14 +1,14 @@
 using System;
-using System.Net.Sockets;
+using System.IO;
 
 
 namespace DCompletionServer
 {
 	public partial class DCompletionServer
 	{
-		void HandleStreamInput(NetworkStream s)
+		void HandleStreamInput(BinaryReader r, BinaryWriter w)
 		{
-			switch (s.ReadByte ()) {
+			switch ((ServerInstruction)r.ReadByte()) {
 				case ServerInstruction.ClearParseCaches:
 					break;
 				case ServerInstruction.ParseDirectories:

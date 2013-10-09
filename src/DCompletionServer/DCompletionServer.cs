@@ -33,13 +33,10 @@ namespace DCompletionServer
 	public partial class DCompletionServer
 	{
 		#region Properties
-		const int port = 13600;
-		TcpListener tcp;
+		const int port = 53600;
+		UdpClient udp;
 
-		int InstanceId=0;
-		int NumClients = 0;
-		const int LastClientDisconnectedTimeout = 15;
-		const int LastClientDisconnectedIntervalMult = 1;
+		const int waitTimeout = 30000;
 		#endregion
 
 		#region Constructor/Init
@@ -48,23 +45,36 @@ namespace DCompletionServer
 			Console.WriteLine ("DCompletionServer written by Alexander Bothe");
 			Console.WriteLine ();
 
-			tcp = new TcpListener(IPAddress.Any, port);
-			tcp.ExclusiveAddressUse = true;
+			udp = new UdpClient{ ExclusiveAddressUse = true };
+			udp.Connect(IPAddress.Any, port);
 		}
 
+		bool stop;
 		public void Run()
 		{
-			tcp.Start ();
+			stop = false;
+			var ep = new IPEndPoint(IPAddress.Any, 0);
 
 			Console.WriteLine("Listening on port "+port.ToString());
 
-			while (tcp.Server.IsBound)
-				ThreadPool.QueueUserWorkItem (clientThread, tcp.AcceptTcpClient());
+			while (!stop && udp.Client.IsBound) {
+				var asyn = udp.BeginReceive ((ar) => {
+					var data = udp.EndReceive (ar,ref ep);
+					ThreadPool.QueueUserWorkItem (clientThread, new Tuple<IPEndPoint, byte[]>(ep, data));
+				}, null);
+
+				if (!asyn.AsyncWaitHandle.WaitOne (waitTimeout)) {
+					Console.WriteLine ("Timeout - no package received during the last {0} seconds!\nShutting down!", waitTimeout/1000);
+					Stop ();
+					break;
+				}
+			}
 		}
 
 		public void Stop()
 		{
-			tcp.Stop ();
+			stop = true;
+			udp.Close ();
 		}
 		#endregion
 
@@ -74,38 +84,7 @@ namespace DCompletionServer
 		/// <param name="s">The incoming tcp client connection.</param>
 		void clientThread(object s)
 		{
-			Interlocked.Increment (ref NumClients);
-			var id = Interlocked.Increment (ref InstanceId);
-
-			var cl = s as TcpClient;
-			Console.WriteLine ("Client #{0} connected from {1}", InstanceId, cl.Client.RemoteEndPoint);
-
-			var stream = cl.GetStream ();
-			while (cl.Connected) {
-				try{
-					HandleStreamInput(stream);
-				}catch(Exception ex) {
-					Console.WriteLine ("#{0} Exception: {1}", id, ex.Message);
-					Console.WriteLine ("#{0} Stacktrace:\r\n{1}", id, ex.StackTrace);
-				}
-			}
-
-			Console.WriteLine ("Client #{0} disconnected ({1})", InstanceId, cl.Client.RemoteEndPoint);
-
-			if (Interlocked.Decrement (ref NumClients) < 1) {
-				Console.WriteLine ("Last client disconnected!");
-				Console.WriteLine ("Waiting {0}s until shutdown...", LastClientDisconnectedTimeout*LastClientDisconnectedIntervalMult);
-
-				for (int i = LastClientDisconnectedTimeout; i >= 0; i++) {
-					Console.WriteLine ("{0}s remaining",i*LastClientDisconnectedIntervalMult);
-					Thread.Sleep (1000 * LastClientDisconnectedIntervalMult);
-
-					if (NumClients > 0)
-						return;
-
-					Stop ();
-				}
-			}
+			var tup = s as Tuple<IPEndPoint, byte[]>;
 		}
 	}
 }
